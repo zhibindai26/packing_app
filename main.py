@@ -88,6 +88,41 @@ if max(precip_list) >= 20:
 if "Partly Cloudy" in conditions_list or "Clear" in conditions_list:
     sunshine = True
 
+def send_email():
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.base import MIMEBase
+    from email import encoders
+
+    email_user = 'zhibin.app@gmail.com'
+    email_password = '40z*U^96eXXk'
+    email_send = 'zhibindai26@gmail.com'
+
+    subject = 'Packing List for {} {} Trip'.format(destination, str(datetime.today().year))
+
+    msg = MIMEMultipart()
+    msg['From'] = email_user
+    msg['To'] = email_send
+    msg['Subject'] = subject
+
+    body = ""
+
+    file = open(output_file, "r")
+    for line in file:
+        body += line
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    text = msg.as_string()
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(email_user, email_password)
+
+
+    server.sendmail(email_user, email_send, text)
+    server.quit()
 
 def toiletries():
     toiletries_list = ['razor', 'toothbrush', 'floss', 'deodorant', 'mouth guard', 'facewash/soap',
@@ -263,3 +298,5 @@ if __name__ == "__main__":
         import pdfkit
         pdfkit.from_url('http://wikitravel.org/en/' + destination_underscore,
                         destination + '_Travel_Guide' + '.pdf')
+
+    send_email()
