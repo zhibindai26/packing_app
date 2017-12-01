@@ -97,7 +97,7 @@ def send_email():
 
     email_user = 'zhibin.app@gmail.com'
     email_password = '40z*U^96eXXk'
-    email_send = 'zhibindai26@gmail.com'
+    email_send = config.get('main', 'email_recipient')
 
     subject = 'Packing List for {} {} Trip'.format(destination, str(datetime.today().year))
 
@@ -238,7 +238,7 @@ def regular_clothes():
     if laundry == 'YES':
         for key, value in clothes_dict.iteritems():
             if clothes_dict[key] != '':
-                clothes_dict[key] = int(value) / 2
+                clothes_dict[key] = ceil(float(value) / 1.5)
 
     # output to file
     with open(output_file, 'a') as outfile:
