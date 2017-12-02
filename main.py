@@ -181,8 +181,9 @@ def regular_clothes():
     clothes_dict = {
     'Boxers': trip_length + 1, 'Socks': trip_length + 1,
     'Athletic Shorts': ceil(trip_length / 5), 'Inside Shirts': ceil(trip_length / 2),
-    'Collared Shirts': '', 'Outside T-Shirts': '', 'Sweaters': '',
-    'Jeans': '', 'Outside Shorts': '', 'Light Jacket': '', 'Heavy Jacket': ''
+    'Sweatpants': ceil(trip_length / 5),'Collared Shirts': '', 'Outside T-Shirts': '',
+    'Sweaters': '', 'Jeans': '', 'Outside Shorts': '',
+    'Light Jacket': '', 'Heavy Jacket': ''
     }
 
     cold_accessories = ['Beanie', 'Gloves', 'Leggings']
@@ -228,7 +229,7 @@ def regular_clothes():
 
     # jacket counts
     if avg_low <= cold:
-        clothes_dict['Heavy Jacket'] = ceil(trip_length / 4)
+        clothes_dict['Heavy Jacket'] = ceil(trip_length / 5)
     elif avg_temp >= chilly and avg_temp < cool:
         clothes_dict['Heavy Jacket'] = ceil(trip_length / 8)
         clothes_dict['Light Jacket'] = ceil(trip_length / 8)
@@ -238,7 +239,7 @@ def regular_clothes():
     if laundry == 'YES':
         for key, value in clothes_dict.iteritems():
             if clothes_dict[key] != '':
-                clothes_dict[key] = ceil(float(value) / 1.5)
+                clothes_dict[key] = ceil(int(value) / 1.5)
 
     # output to file
     with open(output_file, 'a') as outfile:
