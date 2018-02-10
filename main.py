@@ -16,12 +16,24 @@ trip_length = float(config.get('main', 'days'))
 laundry = config.get('main', 'laundry').upper()
 nice_clothes = config.get('main', 'nice_clothes').upper()
 
+email_config = ConfigParser()
+email_config.read('email_config.ini')
+
 output_file = destination + '_' + str(datetime.today().year) + '_packing.txt'
 checkbox = '[ ] '
 
-# create country dictionary
+# create items dictionary
+items_dict = {}
 us_cities = {}
-def create_country_state_dict():
+def create_items_and_location_dictionaries():
+    with open("items.csv", "r") as infile:
+        for line in infile:
+            row = line.strip()
+            row = row.split(',')
+            item = row[0].strip()
+            category = row[1].strip()
+            items_dict[item] = category
+
     with open("us_cities.csv", "r") as infile:
         for line in infile:
             row = line.strip()
@@ -30,7 +42,7 @@ def create_country_state_dict():
             state = row[1].strip()
             us_cities[city] = state
 
-create_country_state_dict()
+create_items_and_location_dictionaries()
 
 # get weather
 avg_high_list = []
@@ -92,11 +104,9 @@ def send_email():
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
-    from email.mime.base import MIMEBase
-    from email import encoders
 
-    email_user = 'zhibin.app@gmail.com'
-    email_password = '40z*U^96eXXk'
+    email_user = email_config.get('main', 'email_user')
+    email_password = email_config.get('main', 'email_password')
     email_send = config.get('main', 'email_recipient')
 
     subject = 'Packing List for {} {} Trip'.format(destination, str(datetime.today().year))
@@ -124,74 +134,60 @@ def send_email():
     server.sendmail(email_user, email_send, text)
     server.quit()
 
-def toiletries():
-    toiletries_list = ['razor', 'toothbrush', 'floss', 'deodorant', 'mouth guard', 'facewash/soap',
-                        'pomade', 'aspirin', 'lotion/oil', 'q-tips', 'tweezers', 'antacid']
-    toiletries_list.sort()
-
+def non_clothes_items():
     with open(output_file, 'a') as outfile:
         outfile.write('\n')
         outfile.write('TOILETRIES')
         outfile.write('\n')
-        for i in toiletries_list:
-            outfile.write(checkbox + i.capitalize())
-            outfile.write('\n')
+        for key, value in items_dict.iteritems():
+            if value == 'Toiletry':
+                outfile.write(checkbox + key.capitalize())
+                outfile.write('\n')
 
-def electronics():
-    electronics_list = ['laptop/charger', 'phone/charger', 'headphones', 'portable charger']
-    electronics_list.sort()
-
-    with open(output_file, 'a') as outfile:
         outfile.write('\n')
         outfile.write('ELECTRONICS')
         outfile.write('\n')
-        for i in electronics_list:
-            outfile.write(checkbox + i.capitalize())
-            outfile.write('\n')
+        for key, value in items_dict.iteritems():
+            if value == 'Electronics':
+                outfile.write(checkbox + key.capitalize())
+                outfile.write('\n')
 
-def accessories():
-    mandatory_accessories = ['gum', 'chapstick', 'water bottle', 'sleep mask',
-                            'plastic bags', 'book', 'selfie stick']
-    mandatory_accessories.sort()
-
-    with open(output_file, 'a') as outfile:
         outfile.write('\n')
         outfile.write('ACCESSORIES')
         outfile.write('\n')
-        for i in mandatory_accessories:
-            outfile.write(checkbox + i.capitalize())
-            outfile.write('\n')
-        if rain is True or trip_length > 4:
-            outfile.write(checkbox + 'Umbrella')
-            outfile.write('\n')
-        if sunshine is True:
-            outfile.write(checkbox + 'Sunglasses')
-            outfile.write('\n')
+        for key, value in items_dict.iteritems():
+            if value == 'Mandatory Accessories':
+                outfile.write(checkbox + key.capitalize())
+                outfile.write('\n')
+            if value == 'Accessories':
+                if rain is True or trip_length > 4:
+                    outfile.write(checkbox + 'Umbrella')
+                    outfile.write('\n')
+                if sunshine is True:
+                    outfile.write(checkbox + 'Sunglasses')
+                    outfile.write('\n')
 
-def id():
-    with open(output_file, 'a') as outfile:
-        outfile.write('\n')
-        outfile.write('ID')
-        outfile.write('\n')
-        outfile.write('[ ] Passport')
-        outfile.write('\n')
-        outfile.write('[ ] Charging Converter')
+        if config.get('main', 'international').upper() == 'YES':
+            outfile.write('\n')
+            outfile.write('ID')
+            outfile.write('\n')
+            for key, value in items_dict.iteritems():
+                if value == 'ID':
+                    outfile.write(checkbox + key.capitalize())
+                    outfile.write('\n')
 
 def regular_clothes():
-    clothes_dict = {
-    'Boxers': trip_length + 1, 'Socks': trip_length + 1,
-    'Athletic Shorts': ceil(trip_length / 5), 'Inside Shirts': ceil(trip_length / 2),
-    'Sweatpants': ceil(trip_length / 5),'Collared Shirts': '', 'Outside T-Shirts': '',
-    'Sweaters': '', 'Jeans': '', 'Outside Shorts': '',
-    'Light Jacket': '', 'Heavy Jacket': ''
-    }
 
-    cold_accessories = ['Beanie', 'Gloves', 'Leggings']
-    nice_clothes_ls = ['Nice Shirt', 'Nice Shoes', 'Slacks']
-    footwear = ['Sneakers', 'Slippers']
-    swimwear = 'Swimwear'
+    clothes_dict = {}
+    for key, value in items_dict.iteritems():
+        if value == 'Clothes':
+            clothes_dict[key] = ''
 
-    # get counts for items
+    clothes_dict['Boxers'] = trip_length + 1
+    clothes_dict['Socks'] = trip_length + 1
+    clothes_dict['Athletic Shorts'] = ceil(trip_length / 4)
+    clothes_dict['Sweatpants'] = ceil(trip_length / 5)
+    clothes_dict['Inside Shirts'] = ceil(trip_length / 1.5)
 
     # shirt counts
     if avg_temp >= hot:
@@ -209,11 +205,9 @@ def regular_clothes():
         clothes_dict['Collared Shirts'] = ceil(trip_length / 2)
         clothes_dict['Outside T-Shirts'] = 1
         clothes_dict['Sweaters'] = ceil(trip_length / 3)
-        clothes_dict['Inside Shirts'] = ceil(trip_length / 1.5)
     elif avg_temp <= cold:
         clothes_dict['Collared Shirts'] = ceil(trip_length / 4)
         clothes_dict['Sweaters'] = ceil(trip_length / 3)
-        clothes_dict['Inside Shirts'] = ceil(trip_length / 1.5)
 
     # jeans counts
     if avg_high >= warm:
@@ -241,7 +235,7 @@ def regular_clothes():
             if clothes_dict[key] != '':
                 clothes_dict[key] = ceil(int(value) / 1.5)
 
-    # output to file
+    # write to file
     with open(output_file, 'a') as outfile:
         outfile.write('CLOTHES')
         outfile.write('\n')
@@ -256,28 +250,28 @@ def regular_clothes():
             outfile.write(checkbox + i + ' - ' + str(clothes_dict[i]))
             outfile.write('\n')
 
-        for i in footwear:
-            outfile.write(checkbox + i)
-            outfile.write('\n')
+        for key, value in items_dict.iteritems():
+            if avg_low <= cold:
+                if value == 'Cold Accessories':
+                    outfile.write(checkbox + key)
+                    outfile.write('\n')
 
-        if avg_low <= cold:
-            for i in cold_accessories:
-                outfile.write(checkbox + i)
+            if nice_clothes == 'YES':
+                if value == 'Formal Clothes':
+                    outfile.write(checkbox + key)
+                    outfile.write('\n')
+
+            if avg_high >= hot and config.get('main', 'swimming').upper() == 'YES':
+                if value == 'Swimwear':
+                    outfile.write(checkbox + key)
+                    outfile.write('\n')
+
+            if value == 'Footwear':
+                outfile.write(checkbox + key)
                 outfile.write('\n')
-
-        if avg_high >= hot and config.get('main', 'swimming').upper() == 'YES':
-            outfile.write(checkbox + swimwear)
-            outfile.write('\n')
-
-        if nice_clothes == 'YES':
-            outfile.write('-----------------------------------------')
-            outfile.write('\n')
-            for i in nice_clothes_ls:
-                outfile.write(checkbox + i)
-                outfile.write('\n')
-
 
 if __name__ == "__main__":
+
     with open(output_file, 'w') as outfile:
         outfile.write('Packing List For ' + str(datetime.now().strftime("%B")) + ' '
                         + str(datetime.today().year) + ' ' + destination + ' Trip')
@@ -288,16 +282,11 @@ if __name__ == "__main__":
         outfile.write('\n')
 
     regular_clothes()
-    toiletries()
-    electronics()
-    accessories()
-
-    if config.get('main', 'international').upper() == 'YES':
-        id()
+    non_clothes_items()
 
     if config.get('main', 'travel_guide').upper() == 'YES':
-        import pdfkit
-        pdfkit.from_url('http://wikitravel.org/en/' + destination_underscore,
-                        destination + '_Travel_Guide' + '.pdf')
+       import pdfkit
+       pdfkit.from_url('http://wikitravel.org/en/' + destination_underscore,
+                       destination + '_Travel_Guide' + '.pdf')
 
     send_email()
