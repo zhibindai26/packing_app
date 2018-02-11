@@ -26,7 +26,7 @@ checkbox = '[ ] '
 items_dict = {}
 us_cities = {}
 def create_items_and_location_dictionaries():
-    with open("items.csv", "r") as infile:
+    with open("csv\items.csv", "r") as infile:
         for line in infile:
             row = line.strip()
             row = row.split(',')
@@ -34,7 +34,7 @@ def create_items_and_location_dictionaries():
             category = row[1].strip()
             items_dict[item] = category
 
-    with open("us_cities.csv", "r") as infile:
+    with open("csv\us_cities.csv", "r") as infile:
         for line in infile:
             row = line.strip()
             row = row.split(',')
@@ -159,13 +159,13 @@ def non_clothes_items():
             if value == 'Mandatory Accessories':
                 outfile.write(checkbox + key.capitalize())
                 outfile.write('\n')
-            if value == 'Accessories':
-                if rain is True or trip_length > 4:
-                    outfile.write(checkbox + 'Umbrella')
-                    outfile.write('\n')
-                if sunshine is True:
-                    outfile.write(checkbox + 'Sunglasses')
-                    outfile.write('\n')
+
+        if rain is True or trip_length > 4:
+            outfile.write(checkbox + 'Umbrella')
+            outfile.write('\n')
+        if sunshine is True:
+            outfile.write(checkbox + 'Sunglasses')
+            outfile.write('\n')
 
         if config.get('main', 'international').upper() == 'YES':
             outfile.write('\n')
