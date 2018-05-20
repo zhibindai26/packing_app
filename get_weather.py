@@ -42,6 +42,8 @@ for i, condition in enumerate(d['conditions'] for d in parsed_json['forecast']['
 
 f.close()
 
+
+# calculate weather details
 delete_from_avgs = -(len(avg_high_list) - int(get_trip_details.trip_length) - 1)
 
 if len(avg_high_list) > int(get_trip_details.trip_length) and delete_from_avgs != 0:

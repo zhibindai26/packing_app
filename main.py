@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-
-from ConfigParser import ConfigParser
-import math
 from datetime import datetime
+import math
 import get_weather
 import get_trip_details
+import send_email
 
 ceil = math.ceil
 destination = get_trip_details.destination
@@ -23,43 +22,8 @@ def create_items_dict():
             category = row[1].strip()
             items_dict[item] = category
 
-def send_email():
-    import smtplib
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-    email_config = get_trip_details.email_config
-
-    email_user = email_config.get('main', 'email_user')
-    email_password = email_config.get('main', 'email_password')
-    email_send = config.get('main', 'email_recipient')
-
-    subject = 'Packing List for {} {} Trip'.format(destination, str(datetime.today().year))
-
-    msg = MIMEMultipart()
-    msg['From'] = email_user
-    msg['To'] = email_send
-    msg['Subject'] = subject
-
-    body = ""
-
-    file = open(output_file, "r")
-    for line in file:
-        body += line
-
-    msg.attach(MIMEText(body, 'plain'))
-
-    text = msg.as_string()
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(email_user, email_password)
-
-
-    server.sendmail(email_user, email_send, text)
-    server.quit()
-
 def non_clothes_items():
-    with open(output_file, 'a') as outfile:
+    with open(output_path, 'a') as outfile:
         outfile.write('\n')
         outfile.write('TOILETRIES')
         outfile.write('\n')
@@ -169,7 +133,7 @@ def regular_clothes():
                 clothes_dict[key] = ceil(int(value) / 1.5)
 
     # write to file
-    with open(output_file, 'a') as outfile:
+    with open(output_path, 'a') as outfile:
         outfile.write('CLOTHES')
         outfile.write('\n')
 
@@ -205,10 +169,12 @@ def regular_clothes():
 
 if __name__ == "__main__":
 
+    from os.path import join as path_join
     output_file = destination + '_' + str(datetime.today().year) + '_packing.txt'
+    output_path = path_join("trips", output_file)
     checkbox = '[ ] '
 
-    with open(output_file, 'w') as outfile:
+    with open(output_path, 'w') as outfile:
         outfile.write('Packing List For ' + str(datetime.now().strftime("%B")) + ' '
                         + str(datetime.today().year) + ' ' + destination + ' Trip')
         outfile.write('\n')
@@ -226,4 +192,4 @@ if __name__ == "__main__":
        pdfkit.from_url('http://wikitravel.org/en/' + get_trip_details.destination_underscore,
                        destination + '_Travel_Guide' + '.pdf')
 
-    send_email()
+    send_email.send_email(output_path)
