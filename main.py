@@ -1,32 +1,20 @@
 #!/usr/bin/env python
-
-from ConfigParser import ConfigParser
-import math
-import urllib2
-import json
 from datetime import datetime
+import math
+import get_weather
+import get_trip_details
+import send_email
 
 ceil = math.ceil
-config = ConfigParser()
-config.read('trip_details.ini')
-
-destination = config.get('main', 'destination')
-destination_underscore = destination.replace(' ', '_')
-trip_length = float(config.get('main', 'days'))
-laundry = config.get('main', 'laundry').upper()
-nice_clothes = config.get('main', 'nice_clothes').upper()
-
-email_config = ConfigParser()
-email_config.read('email_config.ini')
-
-output_file = destination + '_' + str(datetime.today().year) + '_packing.txt'
-checkbox = '[ ] '
+destination = get_trip_details.destination
+config = get_trip_details.config
+trip_length = get_trip_details.trip_length
 
 # create items dictionary
 items_dict = {}
-us_cities = {}
-def create_items_and_location_dictionaries():
-    with open("items.csv", "r") as infile:
+def create_items_dict():
+
+    with open("csv\items.csv", "r") as infile:
         for line in infile:
             row = line.strip()
             row = row.split(',')
@@ -34,108 +22,8 @@ def create_items_and_location_dictionaries():
             category = row[1].strip()
             items_dict[item] = category
 
-    with open("us_cities.csv", "r") as infile:
-        for line in infile:
-            row = line.strip()
-            row = row.split(',')
-            city = row[0].strip()
-            state = row[1].strip()
-            us_cities[city] = state
-
-create_items_and_location_dictionaries()
-
-# get weather
-avg_high_list = []
-avg_low_list = []
-precip_list = []
-conditions_list = []
-
-f = urllib2.urlopen('http://api.wunderground.com/api/cacea4c99bc7010d/forecast10day/conditions/q/%s/%s.json' %
-                    (us_cities[destination], destination_underscore))
-json_string = f.read()
-parsed_json = json.loads(json_string)
-
-# avg high
-for day in parsed_json['forecast']['simpleforecast']['forecastday']:
-    avg_high_list.append(int(day['high']['fahrenheit']))
-
-# avg low
-for day in parsed_json['forecast']['simpleforecast']['forecastday']:
-    avg_low_list.append(int(day['low']['fahrenheit']))
-
-# precipitation
-for i, pop in enumerate(d['pop'] for d in parsed_json['forecast']['simpleforecast']['forecastday']):
-     precip_list.append(pop)
-
-# conditions
-for i, condition in enumerate(d['conditions'] for d in parsed_json['forecast']['simpleforecast']['forecastday']):
-     conditions_list.append(condition)
-
-f.close()
-
-delete_from_avgs = -(len(avg_high_list) - int(trip_length) - 1)
-
-if len(avg_high_list) > int(trip_length) and delete_from_avgs != 0:
-    del avg_high_list[delete_from_avgs:]
-    del avg_low_list[delete_from_avgs:]
-    del precip_list[delete_from_avgs:]
-    del conditions_list[delete_from_avgs:]
-
-# temps
-hot = 80
-warm = 70
-cool = 60
-chilly = 50
-cold = 49
-rain = False
-sunshine = False
-
-avg_high = sum(avg_high_list) / float(len(avg_high_list))
-avg_low = sum(avg_low_list) / float(len(avg_low_list))
-avg_temp = (avg_low + avg_high) / 2
-
-if max(precip_list) >= 20:
-    rain = True
-
-if "Partly Cloudy" in conditions_list or "Clear" in conditions_list:
-    sunshine = True
-
-def send_email():
-    import smtplib
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-
-    email_user = email_config.get('main', 'email_user')
-    email_password = email_config.get('main', 'email_password')
-    email_send = config.get('main', 'email_recipient')
-
-    subject = 'Packing List for {} {} Trip'.format(destination, str(datetime.today().year))
-
-    msg = MIMEMultipart()
-    msg['From'] = email_user
-    msg['To'] = email_send
-    msg['Subject'] = subject
-
-    body = ""
-
-    file = open(output_file, "r")
-    for line in file:
-        body += line
-
-    msg.attach(MIMEText(body, 'plain'))
-
-    text = msg.as_string()
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(email_user, email_password)
-
-
-    server.sendmail(email_user, email_send, text)
-    server.quit()
-
 def non_clothes_items():
-    with open(output_file, 'a') as outfile:
+    with open(output_path, 'a') as outfile:
         outfile.write('\n')
         outfile.write('TOILETRIES')
         outfile.write('\n')
@@ -159,13 +47,13 @@ def non_clothes_items():
             if value == 'Mandatory Accessories':
                 outfile.write(checkbox + key.capitalize())
                 outfile.write('\n')
-            if value == 'Accessories':
-                if rain is True or trip_length > 4:
-                    outfile.write(checkbox + 'Umbrella')
-                    outfile.write('\n')
-                if sunshine is True:
-                    outfile.write(checkbox + 'Sunglasses')
-                    outfile.write('\n')
+
+        if get_weather.rain is True or get_trip_details.trip_length > 4:
+            outfile.write(checkbox + 'Umbrella')
+            outfile.write('\n')
+        if get_weather.sunshine is True:
+            outfile.write(checkbox + 'Sunglasses')
+            outfile.write('\n')
 
         if config.get('main', 'international').upper() == 'YES':
             outfile.write('\n')
@@ -177,6 +65,15 @@ def non_clothes_items():
                     outfile.write('\n')
 
 def regular_clothes():
+
+    avg_temp = get_weather.avg_temp
+    avg_high = get_weather.avg_high
+    avg_low = get_weather.avg_low
+    hot = get_weather.hot
+    warm = get_weather.warm
+    cool = get_weather.cool
+    chilly = get_weather.chilly
+    cold = get_weather.cold
 
     clothes_dict = {}
     for key, value in items_dict.iteritems():
@@ -230,13 +127,13 @@ def regular_clothes():
     elif avg_temp >= cool and avg_temp < warm:
         clothes_dict['Light Jacket'] = ceil(trip_length / 4)
 
-    if laundry == 'YES':
+    if get_trip_details.laundry == 'YES':
         for key, value in clothes_dict.iteritems():
             if clothes_dict[key] != '':
                 clothes_dict[key] = ceil(int(value) / 1.5)
 
     # write to file
-    with open(output_file, 'a') as outfile:
+    with open(output_path, 'a') as outfile:
         outfile.write('CLOTHES')
         outfile.write('\n')
 
@@ -256,7 +153,7 @@ def regular_clothes():
                     outfile.write(checkbox + key)
                     outfile.write('\n')
 
-            if nice_clothes == 'YES':
+            if get_trip_details.nice_clothes == 'YES':
                 if value == 'Formal Clothes':
                     outfile.write(checkbox + key)
                     outfile.write('\n')
@@ -272,21 +169,27 @@ def regular_clothes():
 
 if __name__ == "__main__":
 
-    with open(output_file, 'w') as outfile:
+    from os.path import join as path_join
+    output_file = destination + '_' + str(datetime.today().year) + '_packing.txt'
+    output_path = path_join("trips", output_file)
+    checkbox = '[ ] '
+
+    with open(output_path, 'w') as outfile:
         outfile.write('Packing List For ' + str(datetime.now().strftime("%B")) + ' '
                         + str(datetime.today().year) + ' ' + destination + ' Trip')
         outfile.write('\n')
         outfile.write(str(int(trip_length)) + ' Days' + ' | ' +
-                        'Temps: Avg High: ' + str(avg_high) + ', ' + 'Avg Low: ' + str(avg_low))
+                        'Temps: Avg High: ' + str(get_weather.avg_high) + ', ' + 'Avg Low: ' + str(get_weather.avg_low))
         outfile.write('\n')
         outfile.write('\n')
 
+    create_items_dict()
     regular_clothes()
     non_clothes_items()
 
     if config.get('main', 'travel_guide').upper() == 'YES':
        import pdfkit
-       pdfkit.from_url('http://wikitravel.org/en/' + destination_underscore,
+       pdfkit.from_url('http://wikitravel.org/en/' + get_trip_details.destination_underscore,
                        destination + '_Travel_Guide' + '.pdf')
 
-    send_email()
+    send_email.send_email(output_path)
