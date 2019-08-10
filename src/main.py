@@ -13,7 +13,8 @@ trip_length = get_trip_details.trip_length
 # create items dictionary
 def create_items_dict():
     items_dict = {}
-    with open("csv\items.csv", "r") as infile:
+    item_file = get_trip_details.item_list
+    with open("..\\csv\\" + item_file, "r") as infile:
         next(infile)
         for line in infile:
             row = line.strip()
