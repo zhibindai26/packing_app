@@ -2,27 +2,44 @@ import urllib2
 import json
 import get_trip_details
 
-us_cities = {}
-def create_US_cities_dict():
-    with open("csv\us_cities.csv", "r") as infile:
-        for line in infile:
-            row = line.strip()
-            row = row.split(',')
-            city = row[0].strip()
-            state = row[1].strip()
-            us_cities[city] = state
 
-create_US_cities_dict()
+if get_trip_details.international.lower() == 'yes':
+    world_cities = {}
+
+    def create_intl_cities():
+        with open("csv\world_cities.csv", "r") as infile:
+            for line in infile:
+                row = line.strip()
+                row = row.split(',')
+                country = row[0].strip()
+                code = row[-1].strip()
+                world_cities[country] = code
+
+    create_intl_cities()
+    f = urllib2.urlopen('http://api.wunderground.com/api/cacea4c99bc7010d/forecast10day/conditions/q/%s/%s.json' %
+                        (world_cities[get_trip_details.destination], get_trip_details.destination_underscore))
+else:
+    us_cities = {}
+
+    def create_US_cities_dict():
+        with open("csv\us_cities.csv", "r") as infile:
+            for line in infile:
+                row = line.strip()
+                row = row.split(',')
+                city = row[0].strip()
+                state = row[1].strip()
+                us_cities[city] = state
+
+    create_US_cities_dict()
+    f = urllib2.urlopen('http://api.wunderground.com/api/cacea4c99bc7010d/forecast10day/conditions/q/%s/%s.json' %
+                        (us_cities[get_trip_details.destination], get_trip_details.destination_underscore))
+json_string = f.read()
+parsed_json = json.loads(json_string)
 
 avg_high_list = []
 avg_low_list = []
 precip_list = []
 conditions_list = []
-
-f = urllib2.urlopen('http://api.wunderground.com/api/cacea4c99bc7010d/forecast10day/conditions/q/%s/%s.json' %
-                    (us_cities[get_trip_details.destination], get_trip_details.destination_underscore))
-json_string = f.read()
-parsed_json = json.loads(json_string)
 
 # avg high
 for day in parsed_json['forecast']['simpleforecast']['forecastday']:
@@ -53,11 +70,6 @@ if len(avg_high_list) > int(get_trip_details.trip_length) and delete_from_avgs !
     del conditions_list[delete_from_avgs:]
 
 # temps
-hot = 80
-warm = 70
-cool = 60
-chilly = 50
-cold = 49
 rain = False
 sunshine = False
 
