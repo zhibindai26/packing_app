@@ -1,3 +1,4 @@
 config/
 **.pyc
 .idea/
+csv/*items.csv
