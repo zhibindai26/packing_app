@@ -2,10 +2,10 @@ import requests
 
 
 class GetWeather:
-    def __init__(self, city, trip_length, international):
-        self.international = international.lower()
-        self.city = city.lower()
-        self.trip_length = trip_length + 1
+    def __init__(self, trip_details):
+        self.international = trip_details.international.lower()
+        self.city = trip_details.destination.lower()
+        self.trip_length = trip_details.trip_length + 1
         self.days = "&days=" + str(self.trip_length)
         self.api_key = "&key=5857cc9ae47b48278e8772d1ca50caa2"
         self.units = "&units=I"

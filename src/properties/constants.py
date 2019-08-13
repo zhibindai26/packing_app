@@ -6,44 +6,119 @@ CHILLY = 50
 COLD = 49
 
 # fixed values to add or divide to get number to bring
-BOXERS = 1  # add
-SOCKS = 1
-ATHLETIC_SHORTS = 4  # divide
-SWEATPANTS = 5
-INSIDE_SHIRTS = 1.5
 
-
-# clothes based on temps
-HOT_CLOTHES = {
-    "COLLARED SHIRTS": 2,
-    "OUTSIDE T SHIRTS": 1.5,
-    "INSIDE SHIRTS": 3,
-    "JEANS": 4
+ZHIBIN_ITEMS = {
+    # clothes based on temps
+    "HOT_CLOTHES": {
+        "Collared Shirts": 2,
+        "Outside T-Shirts": 1.5,
+        "Inside Shorts": 3,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Jeans": 4
+    },
+    "HOT_WARM_CLOTHES": {
+        "Collared Shirts": 1.5,
+        "Outside T-Shirts": 2,
+        "Inside Shorts": 3,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Jeans": 4
+    },
+    "WARM_COOL_CLOTHES": {
+        "Collared Shirts": 2,
+        "Outside T-Shirts": 4,
+        "Sweaters": 5,
+        "Jeans": 2,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Sweatpants": 5,
+        "Light Jacket": 4
+    },
+    "COOL_CHILLY_CLOTHES": {
+        "Collared Shirts": 2,
+        "Sweaters": 3,
+        "Jeans": 2,
+        "Light Jacket": 8,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Sweatpants": 5,
+        "Heavy Jacket": 8
+    },
+    "COLD_CLOTHES": {
+        "Collared Shirts": 4,
+        "Sweaters": 3,
+        "Jeans": 2,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Sweatpants": 5,
+        "Heavy Jacket": 6
+    },
+    "ADD": {
+        "Boxers": 1, 
+        "Socks": 1
+    }
 }
 
-HOT_WARM_CLOTHES = {
-    "COLLARED SHIRTS": 1.5,
-    "OUTSIDE T SHIRTS": 2,
-    "OUTSIDE SHORTS": 3
-}
-
-WARM_COOL_CLOTHES = {
-    "COLLARED SHIRTS": 2,
-    "OUTSIDE T SHIRTS": 4,
-    "SWEATERS": 5,
-    "LIGHT JACKET": 4
-}
-
-COOL_CHILLY_CLOTHES = {
-    "COLLARED SHIRTS": 2,
-    "SWEATERS": 3,
-    "JEANS": 2,
-    "LIGHT JACKET": 8,
-    "HEAVY JACKET": 8
-}
-
-COLD_CLOTHES = {
-    "COLLARED SHIRTS": 4,
-    "SWEATERS": 3,
-    "HEAVY JACKET": 6
+KSEO_ITEMS = {
+    # clothes based on temps
+    "HOT_CLOTHES": {
+        "Outside Shirts": 2,
+        "Outside T-Shirts": 1.5,
+        "Inside Shorts": 3,
+        "Inside Shirts": 1.5,
+        "Athletic Shorts": 4,
+        "Jeans": 4,
+        "Bras": 2,
+        "PJs": 5
+    },
+    "HOT_WARM_CLOTHES": {
+        "Outside Shirts": 1.5,
+        "Outside T-Shirts": 2,
+        "Athletic Shorts": 4,
+        "Inside Shorts": 3,
+        "Inside Shirts": 1.5,
+        "Jeans": 4,
+        "Bras": 2,
+        "PJs": 5
+    },
+    "WARM_COOL_CLOTHES": {
+        "Outside Shirts": 2,
+        "Outside T-Shirts": 4,
+        "Sweaters": 5,
+        "Jeans": 2,
+        "Athletic Shorts": 4,
+        "Light Jacket / Vest": 4,
+        "Sweatpants": 5,
+        "Inside Shirts": 1.5,
+        "Bras": 3,
+        "PJs": 5
+    },
+    "COOL_CHILLY_CLOTHES": {
+        "Outside Shirts": 2,
+        "Sweaters": 3,
+        "Jeans": 2,
+        "Light Jacket": 8,
+        "Athletic Shorts": 4,
+        "Heavy Jacket": 8,
+        "Sweatpants": 5,
+        "Inside Shirts": 1.5,
+        "Bras": 3,
+        "PJs": 5
+    },
+    "COLD_CLOTHES": {
+        "Outside Shirts": 4,
+        "Sweaters": 3,
+        "Jeans": 2,
+        "Athletic Shorts": 4,
+        "Heavy Jacket": 6,
+        "Sweatpants": 5,
+        "Inside Shirts": 1.5,
+        "Bras": 3,
+        "PJs": 5
+    },
+    "ADD": {
+        "Underwear": 1,
+        "Socks": 1
+    }
 }

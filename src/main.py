@@ -1,34 +1,23 @@
 #!/usr/bin/env python
 from datetime import datetime
 from utils import get_weather, get_trip_details, write_packing_list, send_email
+from os.path import join as path_join
+
 
 if __name__ == "__main__":
-
-    from os.path import join as path_join
-
     destination = get_trip_details.destination
-    trip_length = get_trip_details.trip_length
-    international = get_trip_details.international
     travel_guide = get_trip_details.travel_guide
 
-    output_file = destination + '_' + str(datetime.today().year) + '_packing.txt'
-    output_path = path_join("trips", output_file)
-    checkbox = '[   ] '
+    year = datetime.today().year
+    month = datetime.today().month
 
-    weather = get_weather.GetWeather(destination, trip_length, international)
+    output_file = destination + '_' + str(year) + '_packing.txt'
+    output_path = path_join("trips", output_file)
+
+    weather = get_weather.GetWeather(get_trip_details)
     weather_details = weather.query_api()
 
-    with open(output_path, 'w') as outfile:
-        outfile.write('Packing List For ' + str(datetime.now().strftime("%B")) + ' '
-                      + str(datetime.today().year) + ' ' + destination.upper() + ' Trip')
-        outfile.write('\n')
-        outfile.write(str(int(trip_length)) + ' Days' + ' | ' +
-                      'Temps: Avg High: ' + str(weather_details["avg_high"]) + ', ' + 'Avg Low: '
-                      + str(weather_details["avg_low"]))
-        outfile.write('\n')
-        outfile.write('\n')
-
-    final_list = write_packing_list.WriteItems(get_trip_details, output_path, weather_details)
+    final_list = write_packing_list.WriteItems(get_trip_details, output_path, year, month, weather_details)
     final_list.write_list()
 
     if travel_guide.lower() == 'yes':
