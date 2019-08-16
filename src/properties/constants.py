@@ -12,7 +12,7 @@ ZHIBIN_ITEMS = {
     "HOT_CLOTHES": {
         "Collared Shirts": 2,
         "Outside T-Shirts": 1.5,
-        "Inside Shorts": 3,
+        "Outside Shorts": 3,
         "Inside Shirts": 1.5,
         "Athletic Shorts": 4,
         "Jeans": 4
@@ -20,7 +20,7 @@ ZHIBIN_ITEMS = {
     "HOT_WARM_CLOTHES": {
         "Collared Shirts": 1.5,
         "Outside T-Shirts": 2,
-        "Inside Shorts": 3,
+        "Outside Shorts": 3,
         "Inside Shirts": 1.5,
         "Athletic Shorts": 4,
         "Jeans": 4
@@ -65,7 +65,7 @@ KSEO_ITEMS = {
     "HOT_CLOTHES": {
         "Outside Shirts": 2,
         "Outside T-Shirts": 1.5,
-        "Inside Shorts": 3,
+        "Outside Shorts": 3,
         "Inside Shirts": 1.5,
         "Athletic Shorts": 4,
         "Jeans": 4,
@@ -76,7 +76,7 @@ KSEO_ITEMS = {
         "Outside Shirts": 1.5,
         "Outside T-Shirts": 2,
         "Athletic Shorts": 4,
-        "Inside Shorts": 3,
+        "Outside Shorts": 3,
         "Inside Shirts": 1.5,
         "Jeans": 4,
         "Bras": 2,

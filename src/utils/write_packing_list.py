@@ -87,10 +87,8 @@ class WriteItems:
         avg_low = self.weather_details["avg_low"]
 
         if "zd" in self.item_list:
-            person = "zd"
             constants_map = ZHIBIN_ITEMS
         else:
-            person = "kseo"
             constants_map = KSEO_ITEMS
 
         clothes_dict = {}
