@@ -7,11 +7,12 @@ from os.path import join as path_join
 if __name__ == "__main__":
     destination = get_trip_details.destination
     travel_guide = get_trip_details.travel_guide
+    item_list = get_trip_details.item_list.replace(".csv", "")
 
     year = datetime.today().year
     month = datetime.today().month
 
-    output_file = destination + '_' + str(year) + '_packing.txt'
+    output_file = destination + '_' + item_list + '_' + str(year) + '_packing.txt'
     output_path = path_join("trips", output_file)
 
     weather = get_weather.GetWeather(get_trip_details)

@@ -14,8 +14,7 @@ class GetWeather:
             self.country_code = self.get_intl_ctry_code(self.city)
             self.search = "?city=" + self.city + "&country=" + self.country_code[self.city]
         else:
-            self.us_state = self.get_us_state(self.city)
-            self.search = "?city=" + self.city + "," + self.us_state
+            self.search = "?city=" + self.city
 
         self.query_string = self.base_url + self.search + self.api_key + self.units + self.days
 
@@ -27,15 +26,6 @@ class GetWeather:
                 city = row[0].strip().lower()
                 if city == city_to_search:
                     return row[5].strip()
-
-    @staticmethod
-    def get_us_state(city_to_search):
-        with open("csv\\us_cities.csv", "r") as infile:
-            for line in infile:
-                row = line.strip().split(',')
-                city = row[0].strip().lower()
-                if city == city_to_search:
-                    return row[1].strip()
 
     def query_api(self):
         r = requests.get(self.query_string)
