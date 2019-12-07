@@ -47,7 +47,7 @@ class WriteItems:
             outfile.write('\n')
             outfile.write('TOILETRIES')
             outfile.write('\n')
-            for key, value in items_dict.iteritems():
+            for key, value in items_dict.items():
                 if value == 'Toiletry':
                     outfile.write(self.checkbox + key.capitalize())
                     outfile.write('\n')
@@ -55,7 +55,7 @@ class WriteItems:
             outfile.write('\n')
             outfile.write('ELECTRONICS')
             outfile.write('\n')
-            for key, value in items_dict.iteritems():
+            for key, value in items_dict.items():
                 if value == 'Electronics':
                     outfile.write(self.checkbox + key.capitalize())
                     outfile.write('\n')
@@ -63,7 +63,7 @@ class WriteItems:
             outfile.write('\n')
             outfile.write('ACCESSORIES')
             outfile.write('\n')
-            for key, value in items_dict.iteritems():
+            for key, value in items_dict.items():
                 if value == 'Mandatory Accessories':
                     outfile.write(self.checkbox + key.capitalize())
                     outfile.write('\n')
@@ -76,7 +76,7 @@ class WriteItems:
                 outfile.write('\n')
                 outfile.write('ID')
                 outfile.write('\n')
-                for key, value in items_dict.iteritems():
+                for key, value in items_dict.items():
                     if value == 'ID':
                         outfile.write(self.checkbox + key.capitalize())
                         outfile.write('\n')
@@ -92,7 +92,7 @@ class WriteItems:
             constants_map = KSEO_ITEMS
 
         clothes_dict = {}
-        for key, value in items_dict.iteritems():
+        for key, value in items_dict.items():
             if value == 'Clothes':
                 clothes_dict[key] = ''
 
@@ -125,7 +125,7 @@ class WriteItems:
                     clothes_dict[key] = ceil(self.trip_length / constants_map["COLD_CLOTHES"][key])
 
         if self.laundry == 'YES':
-            for key, value in clothes_dict.iteritems():
+            for key, value in clothes_dict.items():
                 if clothes_dict[key] != '':
                     clothes_dict[key] = ceil(int(value) / 1.5)
 
@@ -136,7 +136,7 @@ class WriteItems:
             outfile.write('\n')
 
             sorted_clothes = []
-            for key, value in clothes_dict.iteritems():
+            for key, value in clothes_dict.items():
                 if value != '':
                     sorted_clothes.append(key)
 
@@ -145,7 +145,7 @@ class WriteItems:
                 outfile.write(self.checkbox + i + ' - ' + str(clothes_dict[i]))
                 outfile.write('\n')
 
-            for key, value in items_dict.iteritems():
+            for key, value in items_dict.items():
                 if avg_low <= COLD:
                     if value == 'Cold Accessories':
                         outfile.write(self.checkbox + key.capitalize())

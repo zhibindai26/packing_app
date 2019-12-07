@@ -1,5 +1,5 @@
 .idea/
-**.pyc
 config/
-trips/
 csv/*items.csv
+**.pyc
+**.txt

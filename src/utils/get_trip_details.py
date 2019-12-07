@@ -1,16 +1,25 @@
-from ConfigParser import ConfigParser
+import json
+
+trip_config_json = "config\\trip_details.json"
+email_config_json = "config\\email_config.json"
 
 
-config = ConfigParser()
-config.read('config\\trip_details.ini')
-destination = config.get('main', 'destination')
+def json_to_dict(json_file):
+    with open(json_file) as j:
+        return json.load(j)
+
+
+trip_config_dict = json_to_dict(trip_config_json)
+destination = trip_config_dict["destination"]
 destination_underscore = destination.replace(' ', '_')
-trip_length = float(config.get('main', 'days'))
-laundry = config.get('main', 'laundry').upper()
-nice_clothes = config.get('main', 'nice_clothes').upper()
-email_config = ConfigParser()
-email_config.read('config\\email_config.ini')
-international = config.get('main', 'international')
-item_list = config.get('main', 'item_list')
-swimming = config.get('main', 'swimming')
-travel_guide = config.get('main', 'travel_guide')
+trip_length = float(trip_config_dict["days"])
+laundry = trip_config_dict["laundry"].upper()
+nice_clothes = trip_config_dict["nice_clothes"].upper()
+international = trip_config_dict["international"]
+item_list = trip_config_dict["item_list"]
+swimming = trip_config_dict["swimming"]
+email_recipient = trip_config_dict["email_recipient"]
+
+email_config = json_to_dict(email_config_json)
+email_user = email_config["email_user"]
+email_password = email_config["email_password"]
