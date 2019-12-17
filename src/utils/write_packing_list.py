@@ -115,9 +115,7 @@ class WriteItems:
                     clothes_dict[key] = ceil(self.trip_length / constants_map["WARM_COOL_CLOTHES"][key])
         elif CHILLY <= avg_temp < COOL:
             for key in constants_map["COOL_CHILLY_CLOTHES"]:
-                if key.lower == constants_map["COOL_CHILLY_CLOTHES"]["outside t-shirts"]:
-                    clothes_dict['Outside T-Shirts'] = 1
-                elif key.lower() in clothes_dict.keys():
+                if key.lower() in clothes_dict.keys():
                     clothes_dict[key] = ceil(self.trip_length / constants_map["COOL_CHILLY_CLOTHES"][key])
         elif avg_temp <= COLD:
             for key in constants_map["COLD_CLOTHES"].keys():

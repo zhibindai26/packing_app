@@ -9,7 +9,7 @@ if __name__ == "__main__":
     item_list = get_trip_details.item_list.replace(".csv", "")
 
     year = datetime.today().year
-    month = datetime.today().month
+    month = datetime.now().strftime("%B")
     underscore = "_"
     packing = "_packing.txt"
 
