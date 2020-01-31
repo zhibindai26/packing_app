@@ -1,7 +1,6 @@
 import json
 
 trip_config_json = "config\\trip_details.json"
-email_config_json = "config\\email_config.json"
 
 
 def json_to_dict(json_file):
@@ -19,7 +18,3 @@ international = trip_config_dict["international"]
 item_list = trip_config_dict["item_list"]
 swimming = trip_config_dict["swimming"]
 email_recipient = trip_config_dict["email_recipient"]
-
-email_config = json_to_dict(email_config_json)
-email_user = email_config["email_user"]
-email_password = email_config["email_password"]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from datetime import datetime
-from utils import get_weather, get_trip_details, write_packing_list, send_email
+from utils import get_weather, get_trip_details, write_packing_list
 from os.path import join as path_join
 
 
@@ -21,5 +21,3 @@ if __name__ == "__main__":
 
     final_list = write_packing_list.WriteItems(get_trip_details, output_path, year, month, weather_details)
     final_list.write_list()
-
-    # send_email.send_email(output_path)
