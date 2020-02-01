@@ -4,16 +4,16 @@ import requests
 class GetWeather:
     def __init__(self, trip_details):
         self.city = trip_details["destination"].lower()
-        self.international = trip_details["international"].lower()
-        self.trip_length = trip_details["trip_duration"] + 1
+        self.international = trip_details["international"].capitalize()
+        self.trip_length = int(trip_details["duration"]) + 1
         self.days = "&days=" + str(self.trip_length)
         self.api_key = "&key=5857cc9ae47b48278e8772d1ca50caa2"
         self.units = "&units=I"
         self.base_url = "https://api.weatherbit.io/v2.0/forecast/daily"
         
-        if self.international == 'yes':
+        if self.international == 'Yes':
             self.country_code = self.get_intl_ctry_code(self.city)
-            self.search = "?city=" + self.city + "&country=" + self.country_code[self.city]
+            self.search = "?city=" + self.city + "&country=" + self.country_code
         else:
             self.search = "?city=" + self.city
 
@@ -51,6 +51,10 @@ class GetWeather:
         avg_temp = (avg_low + avg_high) / 2
 
         return {
+            "city": weather_data["city_name"],
+            "timezone": weather_data["timezone"],
+            "country_code": weather_data["country_code"],
+            "state_code": weather_data["state_code"],
             "rain": rain,
             "avg_high": round(avg_high),
             "avg_low": round(avg_low),

@@ -3,11 +3,9 @@ HOT = 80
 WARM = 70
 COOL = 60
 CHILLY = 50
-COLD = 49
 
 # fixed values to add or divide to get number to bring
-
-ZHIBIN_ITEMS = {
+ZD_ITEMS = {
     # clothes based on temps
     "HOT_CLOTHES": {
         "Collared Shirts": 2,
@@ -60,7 +58,7 @@ ZHIBIN_ITEMS = {
     }
 }
 
-KSEO_ITEMS = {
+KS_ITEMS = {
     # clothes based on temps
     "HOT_CLOTHES": {
         "Outside Shirts": 2,

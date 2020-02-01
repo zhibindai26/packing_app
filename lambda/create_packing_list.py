@@ -1,14 +1,13 @@
 import math
-import json
 from constants import *
 ceil = math.ceil
 
 
 class WriteItems:
     def __init__(self, trip_details, weather_details):
-        self.traveler = trip_details["traveler"]
-        self.item_list = "zd_items.csv" if self.traveler == "ZD" else "kseo_items.csv"
-        self.trip_length = trip_details["trip_duration"]
+        self.traveler = trip_details["traveler"].upper()
+        self.item_list = "zd_items.csv" if self.traveler == "ZD" else "ks_items.csv"
+        self.trip_length = trip_details["duration"]
         self.international = trip_details["international"].capitalize()
         self.laundry = trip_details["laundry"].capitalize()
         self.nice_clothes = trip_details["nice_clothes"].capitalize()
@@ -93,7 +92,7 @@ class WriteItems:
     def regular_clothes(self, items_dict):
         avg_temp = self.weather_details["avg_temp"]
 
-        constants_map = ZHIBIN_ITEMS if self.traveler == "ZD" else KSEO_ITEMS
+        constants_map = ZD_ITEMS if self.traveler == "ZD" else KS_ITEMS
         laundry_trip_length = ceil(int(self.trip_length) / 1.5)
 
         # doing the clothes with counts based on weather
@@ -148,7 +147,7 @@ class WriteItems:
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
-            elif avg_temp <= COLD:
+            elif avg_temp < CHILLY:
                 if value == "Clothes" and key in constants_map["COLD_CLOTHES"].keys():
                     item_obj = {
                         "item": key.capitalize(),
@@ -164,5 +163,4 @@ class WriteItems:
         self.non_clothes_items(items_dict)
         self.non_count_clothes(items_dict)
         self.regular_clothes(items_dict)
-        json_pack_list = json.dumps(self.packing_list)
-        return json_pack_list
+        return self.packing_list
