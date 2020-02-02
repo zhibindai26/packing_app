@@ -7,7 +7,7 @@ class GetWeather:
         self.international = trip_details["international"].capitalize()
         self.trip_length = int(trip_details["duration"]) + 1
         self.days = "&days=" + str(self.trip_length)
-        self.api_key = "&key=" + trip_details["weather_api_key"]
+        self.api_key = "&key=" + "5857cc9ae47b48278e8772d1ca50caa2"
         self.units = "&units=I"
         self.base_url = "https://api.weatherbit.io/v2.0/forecast/daily"
         
