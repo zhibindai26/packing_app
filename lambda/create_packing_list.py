@@ -7,7 +7,7 @@ class WriteItems:
     def __init__(self, trip_details, weather_details):
         self.traveler = trip_details["traveler"].upper()
         self.item_list = "zd_items.csv" if self.traveler == "ZD" else "ks_items.csv"
-        self.trip_length = trip_details["duration"]
+        self.trip_length = int(trip_details["duration"])
         self.international = trip_details["international"].capitalize()
         self.laundry = trip_details["laundry"].capitalize()
         self.nice_clothes = trip_details["nice_clothes"].capitalize()
@@ -93,7 +93,7 @@ class WriteItems:
         avg_temp = self.weather_details["avg_temp"]
 
         constants_map = ZD_ITEMS if self.traveler == "ZD" else KS_ITEMS
-        laundry_trip_length = ceil(int(self.trip_length) / 1.5)
+        laundry_trip_length = ceil(self.trip_length / 1.5)
 
         # doing the clothes with counts based on weather
         for key, value in items_dict.items():
