@@ -21,7 +21,7 @@ class GetWeather:
 
     @staticmethod
     def get_intl_ctry_code(city_to_search):
-        with open("csv\\world_cities.csv", "r") as infile:
+        with open("./csv/world_cities.csv", "r") as infile:
             for line in infile:
                 row = line.strip().split(',')
                 city = row[0].strip().lower()

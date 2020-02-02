@@ -17,4 +17,4 @@ def get_packing_list(event, context):
         "state_code": weather_details["state_code"],
         "body": packing_list
     }
-    return json.dumps(response_obj)
+    return response_obj

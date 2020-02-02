@@ -19,7 +19,7 @@ class WriteItems:
     # create items dictionary
     def create_items_dict(self):
         items_dict = {}
-        with open("csv\\" + self.item_list, "r") as infile:
+        with open("./csv/" + self.item_list, "r") as infile:
             next(infile)
             for line in infile:
                 row = line.strip()
