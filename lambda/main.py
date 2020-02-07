@@ -15,6 +15,9 @@ def get_packing_list(event, context):
         "timezone": weather_details["timezone"],
         "country_code": weather_details["country_code"],
         "state_code": weather_details["state_code"],
+        "avg_temp": weather_details["avg_temp"],
+        "avg_high": weather_details["avg_high"],
+        "avg_low": weather_details["avg_low"],
         "body": packing_list
     }
     return response_obj
