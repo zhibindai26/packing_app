@@ -24,8 +24,8 @@ class WriteItems:
             for line in infile:
                 row = line.strip()
                 row = row.split(',')
-                item = row[0].strip().capitalize()
-                category = row[1].strip()
+                item = row[0].strip().title()
+                category = row[1].strip().title()
                 items_dict[item] = category
         return items_dict
 
@@ -58,7 +58,6 @@ class WriteItems:
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
-
 
     def non_count_clothes(self, items_dict):
         # do the non-count items first 
@@ -93,16 +92,15 @@ class WriteItems:
         avg_temp = self.weather_details["avg_temp"]
 
         constants_map = ZD_ITEMS if self.traveler == "ZD" else KS_ITEMS
-        laundry_trip_length = ceil(self.trip_length / 1.5)
+        laundry_trip_length = ceil(self.trip_length / 1.5) if self.laundry == 'Yes' else self.trip_length
 
         # doing the clothes with counts based on weather
         for key, value in items_dict.items():
             if value == "Clothes" and key in constants_map["ADD"].keys():
                 item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": laundry_trip_length + constants_map["ADD"][key] if self.laundry == 'Yes' 
-                        else self.trip_length + constants_map["ADD"][key],
+                        "count": laundry_trip_length + constants_map["ADD"][key],
                         "checkbox": self.checkbox
                     }
                 self.packing_list.append(item_obj)
@@ -110,50 +108,45 @@ class WriteItems:
             if avg_temp >= HOT: 
                 if value == "Clothes" and key in constants_map["HOT_CLOTHES"].keys():
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["HOT_CLOTHES"][key]) if self.laundry == 'Yes' 
-                        else ceil(self.trip_length / constants_map["HOT_CLOTHES"][key]),
+                        "count": ceil(laundry_trip_length / constants_map["HOT_CLOTHES"][key]),
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
             elif WARM <= avg_temp < HOT:
                 if value == "Clothes" and key in constants_map["HOT_WARM_CLOTHES"].keys():
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["HOT_WARM_CLOTHES"][key]) if self.laundry == 'Yes' 
-                        else ceil(self.trip_length / constants_map["HOT_WARM_CLOTHES"][key]),
+                        "count": ceil(laundry_trip_length / constants_map["HOT_WARM_CLOTHES"][key]),
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
             elif COOL <= avg_temp < WARM:
                 if value == "Clothes" and key in constants_map["WARM_COOL_CLOTHES"].keys():
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["WARM_COOL_CLOTHES"][key]) if self.laundry == 'Yes' 
-                        else ceil(self.trip_length / constants_map["WARM_COOL_CLOTHES"][key]),
+                        "count": ceil(laundry_trip_length / constants_map["WARM_COOL_CLOTHES"][key]),
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
             elif CHILLY <= avg_temp < COOL:
                 if value == "Clothes" and key in constants_map["COOL_CHILLY_CLOTHES"].keys():
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["COOL_CHILLY_CLOTHES"][key]) if self.laundry == 'Yes' 
-                        else ceil(self.trip_length / constants_map["COOL_CHILLY_CLOTHES"][key]),
+                        "count": ceil(laundry_trip_length / constants_map["COOL_CHILLY_CLOTHES"][key]),
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
             elif avg_temp < CHILLY:
                 if value == "Clothes" and key in constants_map["COLD_CLOTHES"].keys():
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key.title(),
                         "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["COLD_CLOTHES"][key]) if self.laundry == 'Yes' 
-                        else ceil(self.trip_length / constants_map["COLD_CLOTHES"][key]),
+                        "count": ceil(laundry_trip_length / constants_map["COLD_CLOTHES"][key]),
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
