@@ -49,7 +49,7 @@ class WriteItems:
                         "checkbox": self.checkbox
                     }
                     self.packing_list.append(item_obj)
-            elif value == "ID":
+            elif value == "Id":
                 if self.international == 'Yes':
                     item_obj = {
                         "item": key,
