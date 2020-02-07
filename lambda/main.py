@@ -21,16 +21,3 @@ def get_packing_list(event, context):
         "body": packing_list
     }
     return response_obj
-
-
-e = {
-    "traveler": "zd",
-    "destination": "chicago,il",
-    "international": "no",
-    "duration": 4,
-    "laundry": "no",
-    "nice_clothes": "no",
-    "swimming": "no"
-}
-
-print(get_packing_list(e, None))

@@ -108,22 +108,23 @@ class WriteItems:
         
         # doing the clothes with counts based on weather
         for key, value in items_dict.items():
-            if value == "Clothes" and key in clothes_map_to_use.keys():
-                item_obj = {
-                        "item": key,
-                        "category": value,
-                        "count": ceil(laundry_trip_length / clothes_map_to_use[key]),
-                        "checkbox": self.checkbox
-                    }
-                self.packing_list.append(item_obj)
-            elif value == "Clothes" and key in constants_map["ADD"].keys():
-                item_obj = {
-                        "item": key,
-                        "category": value,
-                        "count": laundry_trip_length + constants_map["ADD"][key],
-                        "checkbox": self.checkbox
-                    }
-                self.packing_list.append(item_obj)
+            if value == "Clothes":
+                if key in clothes_map_to_use.keys():
+                    item_obj = {
+                            "item": key,
+                            "category": value,
+                            "count": ceil(laundry_trip_length / clothes_map_to_use[key]),
+                            "checkbox": self.checkbox
+                        }
+                    self.packing_list.append(item_obj)
+                elif key in constants_map["ADD"].keys():
+                    item_obj = {
+                            "item": key,
+                            "category": value,
+                            "count": laundry_trip_length + constants_map["ADD"][key],
+                            "checkbox": self.checkbox
+                        }
+                    self.packing_list.append(item_obj)
 
     def create_list(self):
         items_dict = self.create_items_dict()
