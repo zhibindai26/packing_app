@@ -13,7 +13,8 @@ class GetWeather:
         
         if self.international == 'Yes':
             self.country_code = self.get_intl_ctry_code(self.city)
-            self.search = "?city=" + self.city + "&country=" + self.country_code
+            self.country_code = "&country=" + self.country_code if self.country_code != '' else self.country_code
+            self.search = "?city=" + self.city + self.country_code
         else:
             self.search = "?city=" + self.city
 
@@ -22,11 +23,14 @@ class GetWeather:
     @staticmethod
     def get_intl_ctry_code(city_to_search):
         with open("./csv/world_cities.csv", "r") as infile:
+            country_code = ''
             for line in infile:
                 row = line.strip().split(',')
                 city = row[0].strip().lower()
                 if city == city_to_search:
-                    return row[5].strip()
+                    country_code = row[5].strip()
+                    break
+            return country_code
 
     def query_api(self):
         r = requests.get(self.query_string)

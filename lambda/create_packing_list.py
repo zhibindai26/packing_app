@@ -34,7 +34,7 @@ class WriteItems:
         for key, value in items_dict.items():
             if value in non_clothes:
                 item_obj = {
-                    "item": key.capitalize(),
+                    "item": key,
                     "category": value,
                     "count": 1,
                     "checkbox": self.checkbox
@@ -43,7 +43,7 @@ class WriteItems:
             elif value == "Accessories":
                 if self.weather_details["rain"] is True:
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key,
                         "category": value,
                         "count": 1,
                         "checkbox": self.checkbox
@@ -52,7 +52,7 @@ class WriteItems:
             elif value == "ID":
                 if self.international == 'Yes':
                     item_obj = {
-                        "item": key.capitalize(),
+                        "item": key,
                         "category": value,
                         "count": 1,
                         "checkbox": self.checkbox
@@ -65,7 +65,7 @@ class WriteItems:
         for key, value in items_dict.items():
             if value in non_count_clothing:
                 item_obj = {
-                    "item": key.capitalize(),
+                    "item": key,
                     "category": value,
                     "count": 1,
                     "checkbox": self.checkbox
@@ -73,7 +73,7 @@ class WriteItems:
                 self.packing_list.append(item_obj)
             elif value == "Swimwear" and self.swimming == "Yes":
                 item_obj = {
-                    "item": key.capitalize(),
+                    "item": key,
                     "category": value,
                     "count": 1,
                     "checkbox": self.checkbox
@@ -81,7 +81,7 @@ class WriteItems:
                 self.packing_list.append(item_obj)
             elif value == "Formal Clothes" and self.nice_clothes == "Yes":
                 item_obj = {
-                    "item": key.capitalize(),
+                    "item": key,
                     "category": value,
                     "count": 1,
                     "checkbox": self.checkbox
@@ -94,62 +94,36 @@ class WriteItems:
         constants_map = ZD_ITEMS if self.traveler == "ZD" else KS_ITEMS
         laundry_trip_length = ceil(self.trip_length / 1.5) if self.laundry == 'Yes' else self.trip_length
 
+        clothes_map_to_use = None
+        if avg_temp >= HOT:
+            clothes_map_to_use = constants_map["HOT_CLOTHES"]
+        elif WARM <= avg_temp < HOT:
+            clothes_map_to_use = constants_map["HOT_WARM_CLOTHES"]
+        elif COOL <= avg_temp < WARM:
+            clothes_map_to_use = constants_map["WARM_COOL_CLOTHES"]
+        elif CHILLY <= avg_temp < COOL:
+            clothes_map_to_use = constants_map["COOL_CHILLY_CLOTHES"]
+        elif avg_temp < CHILLY:
+            clothes_map_to_use = constants_map["COLD_CLOTHES"]
+        
         # doing the clothes with counts based on weather
         for key, value in items_dict.items():
-            if value == "Clothes" and key in constants_map["ADD"].keys():
+            if value == "Clothes" and key in clothes_map_to_use.keys():
                 item_obj = {
-                        "item": key.title(),
+                        "item": key,
+                        "category": value,
+                        "count": ceil(laundry_trip_length / clothes_map_to_use[key]),
+                        "checkbox": self.checkbox
+                    }
+                self.packing_list.append(item_obj)
+            elif value == "Clothes" and key in constants_map["ADD"].keys():
+                item_obj = {
+                        "item": key,
                         "category": value,
                         "count": laundry_trip_length + constants_map["ADD"][key],
                         "checkbox": self.checkbox
                     }
                 self.packing_list.append(item_obj)
-
-            if avg_temp >= HOT: 
-                if value == "Clothes" and key in constants_map["HOT_CLOTHES"].keys():
-                    item_obj = {
-                        "item": key.title(),
-                        "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["HOT_CLOTHES"][key]),
-                        "checkbox": self.checkbox
-                    }
-                    self.packing_list.append(item_obj)
-            elif WARM <= avg_temp < HOT:
-                if value == "Clothes" and key in constants_map["HOT_WARM_CLOTHES"].keys():
-                    item_obj = {
-                        "item": key.title(),
-                        "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["HOT_WARM_CLOTHES"][key]),
-                        "checkbox": self.checkbox
-                    }
-                    self.packing_list.append(item_obj)
-            elif COOL <= avg_temp < WARM:
-                if value == "Clothes" and key in constants_map["WARM_COOL_CLOTHES"].keys():
-                    item_obj = {
-                        "item": key.title(),
-                        "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["WARM_COOL_CLOTHES"][key]),
-                        "checkbox": self.checkbox
-                    }
-                    self.packing_list.append(item_obj)
-            elif CHILLY <= avg_temp < COOL:
-                if value == "Clothes" and key in constants_map["COOL_CHILLY_CLOTHES"].keys():
-                    item_obj = {
-                        "item": key.title(),
-                        "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["COOL_CHILLY_CLOTHES"][key]),
-                        "checkbox": self.checkbox
-                    }
-                    self.packing_list.append(item_obj)
-            elif avg_temp < CHILLY:
-                if value == "Clothes" and key in constants_map["COLD_CLOTHES"].keys():
-                    item_obj = {
-                        "item": key.title(),
-                        "category": value,
-                        "count": ceil(laundry_trip_length / constants_map["COLD_CLOTHES"][key]),
-                        "checkbox": self.checkbox
-                    }
-                    self.packing_list.append(item_obj)
 
     def create_list(self):
         items_dict = self.create_items_dict()
