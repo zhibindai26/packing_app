@@ -13,8 +13,9 @@ class WriteItems:
         self.nice_clothes = trip_details["nice_clothes"].capitalize()
         self.swimming = trip_details["swimming"].capitalize()
         self.weather_details = weather_details
-        self.packing_list = []
+        self.avg_temp = weather_details["avg_temp"]
         self.checkbox = "[  ]"
+        self.packing_list = []
 
     # create items dictionary
     def create_items_dict(self):
@@ -22,97 +23,56 @@ class WriteItems:
         with open("./csv/" + self.item_list, "r") as infile:
             next(infile)
             for line in infile:
-                row = line.strip()
-                row = row.split(',')
-                item = row[0].strip().title()
-                category = row[1].strip().title()
-                items_dict[item] = category
+                row = line.strip().split(',')
+                item = row[0].title()
+                category = row[1].title()
+                category_type = row[2].title()
+                items_dict[item] = [category, category_type]
         return items_dict
 
-    def non_clothes_items(self, items_dict):
-        non_clothes = ["Toiletry", "Electronics", "Mandatory Accessories"]
+    def non_count(self, items_dict):
         for key, value in items_dict.items():
-            if value in non_clothes:
-                item_obj = {
+            item_obj = {
                     "item": key,
-                    "category": value,
+                    "category": value[0],
                     "count": 1,
                     "checkbox": self.checkbox
                 }
-                self.packing_list.append(item_obj)
-            elif value == "Accessories":
-                if self.weather_details["rain"] is True:
-                    item_obj = {
-                        "item": key,
-                        "category": value,
-                        "count": 1,
-                        "checkbox": self.checkbox
-                    }
+            if value[1] == "Non-Clothes":
+                if value[0] not in ["Rain", "Id"]:
                     self.packing_list.append(item_obj)
-            elif value == "Id":
-                if self.international == 'Yes':
-                    item_obj = {
-                        "item": key,
-                        "category": value,
-                        "count": 1,
-                        "checkbox": self.checkbox
-                    }
+                elif (value[0] == "Rain" and self.weather_details["rain"] is True) or (value[0] == "Id" and self.international == 'Yes'):
+                    self.packing_list.append(item_obj)
+            elif value[1] == "Non-Count Clothes":
+                if (value[0] == "Footwear") or \
+                    (value[0] == "Cold Accessories" and self.avg_temp <= COOL) or \
+                    (value[0] == "Swimwear" and self.swimming == "Yes") or \
+                    (value[0] == "Formal Clothes" and self.nice_clothes == "Yes"):
                     self.packing_list.append(item_obj)
 
-    def non_count_clothes(self, items_dict):
-        # do the non-count items first 
-        non_count_clothing = ["Cold Accessories", "Footwear"]
-        for key, value in items_dict.items():
-            if value in non_count_clothing:
-                item_obj = {
-                    "item": key,
-                    "category": value,
-                    "count": 1,
-                    "checkbox": self.checkbox
-                }
-                self.packing_list.append(item_obj)
-            elif value == "Swimwear" and self.swimming == "Yes":
-                item_obj = {
-                    "item": key,
-                    "category": value,
-                    "count": 1,
-                    "checkbox": self.checkbox
-                }
-                self.packing_list.append(item_obj)
-            elif value == "Formal Clothes" and self.nice_clothes == "Yes":
-                item_obj = {
-                    "item": key,
-                    "category": value,
-                    "count": 1,
-                    "checkbox": self.checkbox
-                }
-                self.packing_list.append(item_obj)
-    
     def regular_clothes(self, items_dict):
-        avg_temp = self.weather_details["avg_temp"]
-
         constants_map = ZD_ITEMS if self.traveler == "ZD" else KS_ITEMS
         laundry_trip_length = ceil(self.trip_length / 1.5) if self.laundry == 'Yes' else self.trip_length
 
         clothes_map_to_use = None
-        if avg_temp >= HOT:
+        if self.avg_temp >= HOT:
             clothes_map_to_use = constants_map["HOT_CLOTHES"]
-        elif WARM <= avg_temp < HOT:
+        elif WARM <= self.avg_temp < HOT:
             clothes_map_to_use = constants_map["HOT_WARM_CLOTHES"]
-        elif COOL <= avg_temp < WARM:
+        elif COOL <= self.avg_temp < WARM:
             clothes_map_to_use = constants_map["WARM_COOL_CLOTHES"]
-        elif CHILLY <= avg_temp < COOL:
+        elif CHILLY <= self.avg_temp < COOL:
             clothes_map_to_use = constants_map["COOL_CHILLY_CLOTHES"]
-        elif avg_temp < CHILLY:
+        elif self.avg_temp < CHILLY:
             clothes_map_to_use = constants_map["COLD_CLOTHES"]
         
         # doing the clothes with counts based on weather
         for key, value in items_dict.items():
-            if value == "Clothes":
+            if value[1] == "Clothes":
                 if key in clothes_map_to_use.keys():
                     item_obj = {
                             "item": key,
-                            "category": value,
+                            "category": value[0],
                             "count": ceil(laundry_trip_length / clothes_map_to_use[key]),
                             "checkbox": self.checkbox
                         }
@@ -120,7 +80,7 @@ class WriteItems:
                 elif key in constants_map["ADD"].keys():
                     item_obj = {
                             "item": key,
-                            "category": value,
+                            "category": value[0],
                             "count": laundry_trip_length + constants_map["ADD"][key],
                             "checkbox": self.checkbox
                         }
@@ -128,7 +88,6 @@ class WriteItems:
 
     def create_list(self):
         items_dict = self.create_items_dict()
-        self.non_clothes_items(items_dict)
-        self.non_count_clothes(items_dict)
+        self.non_count(items_dict)
         self.regular_clothes(items_dict)
         return self.packing_list
