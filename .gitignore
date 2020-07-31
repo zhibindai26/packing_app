@@ -2,4 +2,8 @@
 config/
 csv/*items.csv
 **.pyc
-**.txt
+lambda/*
+!lambda/main.py
+!lambda/constants.py
+!lambda/create_packing_list.py
+!lambda/get_weather.py
